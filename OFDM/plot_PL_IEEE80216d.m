@@ -10,10 +10,10 @@ semilogx(distance,y_IEEE16d(1,:),'k:','linewidth',1.5), hold on
 semilogx(distance,y_IEEE16d(2,:),'k-','linewidth',1.5), grid on 
 title(['IEEE 802.16d Path loss Models, f_c=',num2str(fc/1e6),'MHz'])
 axis([1 1000 10 150]), xlabel('Distance[m]'), ylabel('Pathloss[dB]')
-legend('h_{Tx}=30m, h_{Rx}=2m','h_{Tx}=30m, h_{Rx}=10m',2)
+legend('h_{Tx}=30m, h_{Rx}=2m','h_{Tx}=30m, h_{Rx}=10m','Northwest')
 subplot(122)
 semilogx(distance,y_MIEEE16d(1,:),'k:','linewidth',1.5), hold on
 semilogx(distance,y_MIEEE16d(2,:),'k-','linewidth',1.5), grid on 
 title(['Modified IEEE 802.16d Path loss Models, f_c=', num2str(fc/1e6), 'MHz'])
 axis([1 1000 10 150]), xlabel('Distance[m]'), ylabel('Pathloss[dB]')
-legend('h_{Tx}=30m, h_{Rx}=2m','h_{Tx}=30m, h_{Rx}=10m',2)
+legend('h_{Tx}=30m, h_{Rx}=2m','h_{Tx}=30m, h_{Rx}=10m','Northwest')
