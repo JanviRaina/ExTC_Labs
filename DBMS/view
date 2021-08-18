@@ -1,0 +1,254 @@
+Enter password: *****
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 3
+Server version: 10.6.3-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| electrical         |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.099 sec)
+
+MariaDB [(none)]> create database vjti;
+Query OK, 1 row affected (0.087 sec)
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| electrical         |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| vjti               |
++--------------------+
+6 rows in set (0.001 sec)
+
+MariaDB [(none)]> create table employee (eid int,ename char(20),salary float,dob date);
+ERROR 1046 (3D000): No database selected
+MariaDB [(none)]> use vjti;
+Database changed
+MariaDB [vjti]> create table employee (eid int,ename char(20),salary float,dob date);
+Query OK, 0 rows affected (0.346 sec)
+
+MariaDB [vjti]> desc employee;
++--------+----------+------+-----+---------+-------+
+| Field  | Type     | Null | Key | Default | Extra |
++--------+----------+------+-----+---------+-------+
+| eid    | int(11)  | YES  |     | NULL    |       |
+| ename  | char(20) | YES  |     | NULL    |       |
+| salary | float    | YES  |     | NULL    |       |
+| dob    | date     | YES  |     | NULL    |       |
++--------+----------+------+-----+---------+-------+
+4 rows in set (0.079 sec)
+
+MariaDB [vjti]> insert into employee values (1,"Janvi",50000.00,"2000-10-09");
+Query OK, 1 row affected (0.339 sec)
+
+MariaDB [vjti]> insert into employee values (1,"Janvi",50000.00,"2000/10/09");
+Query OK, 1 row affected (0.036 sec)
+
+MariaDB [vjti]> select * from employee;
++------+-------+--------+------------+
+| eid  | ename | salary | dob        |
++------+-------+--------+------------+
+|    1 | Janvi |  50000 | 2000-10-09 |
+|    1 | Janvi |  50000 | 2000-10-09 |
++------+-------+--------+------------+
+2 rows in set (0.001 sec)
+
+MariaDB [vjti]> insert into employee values (2,"Madhura",50000.03,"2000/12/28");
+Query OK, 1 row affected (0.065 sec)
+
+MariaDB [vjti]> select * from employee;
++------+---------+--------+------------+
+| eid  | ename   | salary | dob        |
++------+---------+--------+------------+
+|    1 | Janvi   |  50000 | 2000-10-09 |
+|    1 | Janvi   |  50000 | 2000-10-09 |
+|    2 | Madhura |  50000 | 2000-12-28 |
++------+---------+--------+------------+
+3 rows in set (0.000 sec)
+
+MariaDB [vjti]> insert into employee values (1,"Janvi",50000.00,"2000-10-09"),(3,"Karuna",50000.95,"2001/02/08");
+Query OK, 2 rows affected (0.065 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+MariaDB [vjti]> select * from employee;
++------+---------+---------+------------+
+| eid  | ename   | salary  | dob        |
++------+---------+---------+------------+
+|    1 | Janvi   |   50000 | 2000-10-09 |
+|    1 | Janvi   |   50000 | 2000-10-09 |
+|    2 | Madhura |   50000 | 2000-12-28 |
+|    1 | Janvi   |   50000 | 2000-10-09 |
+|    3 | Karuna  | 50000.9 | 2001-02-08 |
++------+---------+---------+------------+
+5 rows in set (0.000 sec)
+
+MariaDB [vjti]> delete from employee where eid=1;
+Query OK, 3 rows affected (0.076 sec)
+
+MariaDB [vjti]> select * from employee;
++------+---------+---------+------------+
+| eid  | ename   | salary  | dob        |
++------+---------+---------+------------+
+|    2 | Madhura |   50000 | 2000-12-28 |
+|    3 | Karuna  | 50000.9 | 2001-02-08 |
++------+---------+---------+------------+
+2 rows in set (0.000 sec)
+
+MariaDB [vjti]> insert into employee values (1,"Janvi",50000.00,"2000-10-09");
+Query OK, 1 row affected (0.033 sec)
+
+MariaDB [vjti]> select * from employee;
++------+---------+---------+------------+
+| eid  | ename   | salary  | dob        |
++------+---------+---------+------------+
+|    2 | Madhura |   50000 | 2000-12-28 |
+|    3 | Karuna  | 50000.9 | 2001-02-08 |
+|    1 | Janvi   |   50000 | 2000-10-09 |
++------+---------+---------+------------+
+3 rows in set (0.000 sec)
+
+MariaDB [vjti]> create view v1 as select eid,name,dob from employee;
+ERROR 1054 (42S22): Unknown column 'name' in 'field list'
+MariaDB [vjti]> create view v1 as select eid,ename,dob from employee;
+Query OK, 0 rows affected (0.140 sec)
+
+MariaDB [vjti]> show tables;
++----------------+
+| Tables_in_vjti |
++----------------+
+| employee       |
+| v1             |
++----------------+
+2 rows in set (0.001 sec)
+
+MariaDB [vjti]> desc v1;
++-------+----------+------+-----+---------+-------+
+| Field | Type     | Null | Key | Default | Extra |
++-------+----------+------+-----+---------+-------+
+| eid   | int(11)  | YES  |     | NULL    |       |
+| ename | char(20) | YES  |     | NULL    |       |
+| dob   | date     | YES  |     | NULL    |       |
++-------+----------+------+-----+---------+-------+
+3 rows in set (0.057 sec)
+
+MariaDB [vjti]> show create table v1;
++------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+| View | Create View                                                                                                                                                                                      | character_set_client | collation_connection |
++------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+| v1   | CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `v1` AS select `employee`.`eid` AS `eid`,`employee`.`ename` AS `ename`,`employee`.`dob` AS `dob` from `employee` | cp850                | cp850_general_ci     |
++------+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+----------------------+----------------------+
+1 row in set (0.000 sec)
+
+MariaDB [vjti]> create view v2 as select eid,ename,salary from employee;
+Query OK, 0 rows affected (0.140 sec)
+
+MariaDB [vjti]> show tables;
++----------------+
+| Tables_in_vjti |
++----------------+
+| employee       |
+| v1             |
+| v2             |
++----------------+
+3 rows in set (0.001 sec)
+
+MariaDB [vjti]> desc v2;
++--------+----------+------+-----+---------+-------+
+| Field  | Type     | Null | Key | Default | Extra |
++--------+----------+------+-----+---------+-------+
+| eid    | int(11)  | YES  |     | NULL    |       |
+| ename  | char(20) | YES  |     | NULL    |       |
+| salary | float    | YES  |     | NULL    |       |
++--------+----------+------+-----+---------+-------+
+3 rows in set (0.111 sec)
+
+MariaDB [vjti]> insert into v1 values(4,"Gaurav","2000-11-04");
+Query OK, 1 row affected (0.034 sec)
+
+MariaDB [vjti]> select * from v1;
++------+---------+------------+
+| eid  | ename   | dob        |
++------+---------+------------+
+|    2 | Madhura | 2000-12-28 |
+|    3 | Karuna  | 2001-02-08 |
+|    1 | Janvi   | 2000-10-09 |
+|    4 | Gaurav  | 2000-11-04 |
++------+---------+------------+
+4 rows in set (0.000 sec)
+
+MariaDB [vjti]> select * from employee;
++------+---------+---------+------------+
+| eid  | ename   | salary  | dob        |
++------+---------+---------+------------+
+|    2 | Madhura |   50000 | 2000-12-28 |
+|    3 | Karuna  | 50000.9 | 2001-02-08 |
+|    1 | Janvi   |   50000 | 2000-10-09 |
+|    4 | Gaurav  |    NULL | 2000-11-04 |
++------+---------+---------+------------+
+4 rows in set (0.000 sec)
+
+MariaDB [vjti]> update v1 set eid=5 where ename="Janvi";
+Query OK, 1 row affected (0.090 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+MariaDB [vjti]> select * from v1;
++------+---------+------------+
+| eid  | ename   | dob        |
++------+---------+------------+
+|    2 | Madhura | 2000-12-28 |
+|    3 | Karuna  | 2001-02-08 |
+|    5 | Janvi   | 2000-10-09 |
+|    4 | Gaurav  | 2000-11-04 |
++------+---------+------------+
+4 rows in set (0.001 sec)
+
+MariaDB [vjti]> select * from employee;
++------+---------+---------+------------+
+| eid  | ename   | salary  | dob        |
++------+---------+---------+------------+
+|    2 | Madhura |   50000 | 2000-12-28 |
+|    3 | Karuna  | 50000.9 | 2001-02-08 |
+|    5 | Janvi   |   50000 | 2000-10-09 |
+|    4 | Gaurav  |    NULL | 2000-11-04 |
++------+---------+---------+------------+
+4 rows in set (0.000 sec)
+
+MariaDB [vjti]> delete from v1 where eid=5;
+Query OK, 1 row affected (0.068 sec)
+
+MariaDB [vjti]> select * from v1;
++------+---------+------------+
+| eid  | ename   | dob        |
++------+---------+------------+
+|    2 | Madhura | 2000-12-28 |
+|    3 | Karuna  | 2001-02-08 |
+|    4 | Gaurav  | 2000-11-04 |
++------+---------+------------+
+3 rows in set (0.001 sec)
+
+MariaDB [vjti]> select * from employee;
++------+---------+---------+------------+
+| eid  | ename   | salary  | dob        |
++------+---------+---------+------------+
+|    2 | Madhura |   50000 | 2000-12-28 |
+|    3 | Karuna  | 50000.9 | 2001-02-08 |
+|    4 | Gaurav  |    NULL | 2000-11-04 |
++------+---------+---------+------------+
+3 rows in set (0.000 sec)
+
+MariaDB [vjti]>
