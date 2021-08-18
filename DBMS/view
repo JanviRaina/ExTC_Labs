@@ -251,4 +251,97 @@ MariaDB [vjti]> select * from employee;
 +------+---------+---------+------------+
 3 rows in set (0.000 sec)
 
+MariaDB [vjti]> rename view v1 to v3;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'view v1 to v3' at line 1
+MariaDB [vjti]> rename table v1 to v3 ;
+Query OK, 0 rows affected (0.203 sec)
+
+MariaDB [vjti]> show tables;
++----------------+
+| Tables_in_vjti |
++----------------+
+| employee       |
+| v2             |
+| v3             |
++----------------+
+3 rows in set (0.001 sec)
+
+MariaDB [vjti]> select * from v3;
++------+---------+------------+
+| eid  | ename   | dob        |
++------+---------+------------+
+|    2 | Madhura | 2000-12-28 |
+|    3 | Karuna  | 2001-02-08 |
+|    4 | Gaurav  | 2000-11-04 |
++------+---------+------------+
+3 rows in set (0.007 sec)
+
+MariaDB [vjti]> truncate v3;
+ERROR 1146 (42S02): Table 'vjti.v3' doesn't exist
+MariaDB [vjti]> drop view v3;
+Query OK, 0 rows affected (0.154 sec)
+
+MariaDB [vjti]> show tables;
++----------------+
+| Tables_in_vjti |
++----------------+
+| employee       |
+| v2             |
++----------------+
+2 rows in set (0.001 sec)
+
+MariaDB [vjti]> desc v2;
++--------+----------+------+-----+---------+-------+
+| Field  | Type     | Null | Key | Default | Extra |
++--------+----------+------+-----+---------+-------+
+| eid    | int(11)  | YES  |     | NULL    |       |
+| ename  | char(20) | YES  |     | NULL    |       |
+| salary | float    | YES  |     | NULL    |       |
++--------+----------+------+-----+---------+-------+
+3 rows in set (0.027 sec)
+
+MariaDB [vjti]> create or replace view v2 as select eid,ename,dob from employee;
+Query OK, 0 rows affected (0.167 sec)
+
+MariaDB [vjti]> desc v2;
++-------+----------+------+-----+---------+-------+
+| Field | Type     | Null | Key | Default | Extra |
++-------+----------+------+-----+---------+-------+
+| eid   | int(11)  | YES  |     | NULL    |       |
+| ename | char(20) | YES  |     | NULL    |       |
+| dob   | date     | YES  |     | NULL    |       |
++-------+----------+------+-----+---------+-------+
+3 rows in set (0.033 sec)
+
+MariaDB [vjti]> alter table v1 add address varchar(20);
+ERROR 1146 (42S02): Table 'vjti.v1' doesn't exist
+MariaDB [vjti]> alter view v1 add address varchar(20);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'add address varchar(20)' at line 1
+MariaDB [vjti]> alter table v2 add address varchar(20);
+ERROR 1347 (HY000): 'vjti.v2' is not of type 'BASE TABLE'
+MariaDB [vjti]> alter view v2 add address varchar(20);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'add address varchar(20)' at line 1
+MariaDB [vjti]> alter table v2 modify eid char(10);
+ERROR 1347 (HY000): 'vjti.v2' is not of type 'BASE TABLE'
+MariaDB [vjti]> alter table v2 change eid id char(20);
+ERROR 1347 (HY000): 'vjti.v2' is not of type 'BASE TABLE'
+MariaDB [vjti]> alter table employee change eid id char(20);
+Query OK, 3 rows affected (0.645 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+MariaDB [vjti]> desc employee;
++--------+----------+------+-----+---------+-------+
+| Field  | Type     | Null | Key | Default | Extra |
++--------+----------+------+-----+---------+-------+
+| id     | char(20) | YES  |     | NULL    |       |
+| ename  | char(20) | YES  |     | NULL    |       |
+| salary | float    | YES  |     | NULL    |       |
+| dob    | date     | YES  |     | NULL    |       |
++--------+----------+------+-----+---------+-------+
+4 rows in set (0.118 sec)
+
+MariaDB [vjti]> desc v2;
+ERROR 1356 (HY000): View 'vjti.v2' references invalid table(s) or column(s) or function(s) or definer/invoker of view lack rights to use them
+MariaDB [vjti]> select * from v2;
+ERROR 1356 (HY000): View 'vjti.v2' references invalid table(s) or column(s) or function(s) or definer/invoker of view lack rights to use them
 MariaDB [vjti]>
