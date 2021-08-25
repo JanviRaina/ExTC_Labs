@@ -18,7 +18,7 @@ figure(5);impedance(m,3150e6:35e6:3850e6)
 
 % Reflection Coefficient of Antenna
 s=sparameters(m,3150e6:35e6:3850e6);
-figure(6);rflot(s)
+figure(6);rfplot(s)
 y=rfparam(s,1,1);
 k=abs(y);
 x=mag2db(k);
