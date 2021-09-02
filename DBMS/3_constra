@@ -122,4 +122,51 @@ MariaDB [amazon]> alter table orders add constraint fk foreign key(cid) referenc
 Query OK, 0 rows affected (0.634 sec)
 Records: 0  Duplicates: 0  Warnings: 0
 
+MariaDB [amazon]> desc orders;
++-------+----------+------+-----+---------+-------+
+| Field | Type     | Null | Key | Default | Extra |
++-------+----------+------+-----+---------+-------+
+| oid   | int(11)  | NO   | PRI | NULL    |       |
+| cid   | int(11)  | YES  | MUL | NULL    |       |
+| oname | char(30) | YES  |     | NULL    |       |
++-------+----------+------+-----+---------+-------+
+3 rows in set (0.092 sec)
+
+MariaDB [amazon]> select * from customer;
++-----+-------+------------+
+| cid | cname | dop        |
++-----+-------+------------+
+|   1 | AAA   | 1991-05-13 |
++-----+-------+------------+
+1 row in set (0.001 sec)
+
+MariaDB [amazon]> insert into customer values(2,"BBB","1993-08-12");
+Query OK, 1 row affected (0.047 sec)
+
+MariaDB [amazon]> select * from customer;
++-----+-------+------------+
+| cid | cname | dop        |
++-----+-------+------------+
+|   1 | AAA   | 1991-05-13 |
+|   2 | BBB   | 1993-08-12 |
++-----+-------+------------+
+2 rows in set (0.000 sec)
+
+MariaDB [amazon]> insert into orders values(111,1,"MobilePhone");
+Query OK, 1 row affected (0.089 sec)
+
+MariaDB [amazon]> insert into orders values(222,2,"Pendrive");
+Query OK, 1 row affected (0.051 sec)
+
+MariaDB [amazon]> select * from orders;
++-----+------+-------------+
+| oid | cid  | oname       |
++-----+------+-------------+
+| 111 |    1 | MobilePhone |
+| 222 |    2 | Pendrive    |
++-----+------+-------------+
+2 rows in set (0.000 sec)
+
+MariaDB [amazon]> insert into orders values(333,3,"Keyboard");
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`amazon`.`orders`, CONSTRAINT `fk` FOREIGN KEY (`cid`) REFERENCES `customer` (`cid`))
 MariaDB [amazon]>
