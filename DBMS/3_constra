@@ -169,4 +169,145 @@ MariaDB [amazon]> select * from orders;
 
 MariaDB [amazon]> insert into orders values(333,3,"Keyboard");
 ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`amazon`.`orders`, CONSTRAINT `fk` FOREIGN KEY (`cid`) REFERENCES `customer` (`cid`))
+MariaDB [amazon]> update customer set cid=3 where cname="AAA";
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`amazon`.`orders`, CONSTRAINT `fk` FOREIGN KEY (`cid`) REFERENCES `customer` (`cid`))
+MariaDB [amazon]> delete from customer where cid=1;
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`amazon`.`orders`, CONSTRAINT `fk` FOREIGN KEY (`cid`) REFERENCES `customer` (`cid`))
+MariaDB [amazon]> insert into customer values(3,"CCC","1995-05-15");
+Query OK, 1 row affected (0.045 sec)
+
+MariaDB [amazon]> create table employees(eid int,ename varchar(30),age int default 20);
+Query OK, 0 rows affected (0.359 sec)
+
+MariaDB [amazon]> insert into employee values(1,"AAA",17);
+ERROR 1146 (42S02): Table 'amazon.employee' doesn't exist
+MariaDB [amazon]> insert into employees values(1,"AAA",17);
+Query OK, 1 row affected (0.065 sec)
+
+MariaDB [amazon]> select * from employees;
++------+-------+------+
+| eid  | ename | age  |
++------+-------+------+
+|    1 | AAA   |   17 |
++------+-------+------+
+1 row in set (0.000 sec)
+
+MariaDB [amazon]> insert into employees(eid,ename) values (2,"BBB");
+Query OK, 1 row affected (0.038 sec)
+
+MariaDB [amazon]> select * from employees;
++------+-------+------+
+| eid  | ename | age  |
++------+-------+------+
+|    1 | AAA   |   17 |
+|    2 | BBB   |   20 |
++------+-------+------+
+2 rows in set (0.000 sec)
+
+MariaDB [amazon]> insert into employees(eid,ename) values (3,"CCC");
+Query OK, 1 row affected (0.068 sec)
+
+MariaDB [amazon]> select * from employees;
++------+-------+------+
+| eid  | ename | age  |
++------+-------+------+
+|    1 | AAA   |   17 |
+|    2 | BBB   |   20 |
+|    3 | CCC   |   20 |
++------+-------+------+
+3 rows in set (0.000 sec)
+
+MariaDB [amazon]> alter table employees alter age drop default;
+Query OK, 0 rows affected (0.297 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [amazon]> select * from employees;
++------+-------+------+
+| eid  | ename | age  |
++------+-------+------+
+|    1 | AAA   |   17 |
+|    2 | BBB   |   20 |
+|    3 | CCC   |   20 |
++------+-------+------+
+3 rows in set (0.012 sec)
+
+MariaDB [amazon]> insert into employees(eid,ename) values (4,"DDD");
+ERROR 1364 (HY000): Field 'age' doesn't have a default value
+MariaDB [amazon]> alter table employees alter age set default 18;
+Query OK, 0 rows affected (0.233 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [amazon]> desc employee;
+ERROR 1146 (42S02): Table 'amazon.employee' doesn't exist
+MariaDB [amazon]> desc employees;
++-------+-------------+------+-----+---------+-------+
+| Field | Type        | Null | Key | Default | Extra |
++-------+-------------+------+-----+---------+-------+
+| eid   | int(11)     | YES  |     | NULL    |       |
+| ename | varchar(30) | YES  |     | NULL    |       |
+| age   | int(11)     | YES  |     | 18      |       |
++-------+-------------+------+-----+---------+-------+
+3 rows in set (0.022 sec)
+
+MariaDB [amazon]> create table payment(pid int check(pid>1));
+Query OK, 0 rows affected (0.223 sec)
+
+MariaDB [amazon]> insert into payment values(1);
+ERROR 4025 (23000): CONSTRAINT `payment.pid` failed for `amazon`.`payment`
+MariaDB [amazon]> insert into payment values(2);
+Query OK, 1 row affected (0.024 sec)
+
+MariaDB [amazon]> select * from payment;
++------+
+| pid  |
++------+
+|    2 |
++------+
+1 row in set (0.000 sec)
+
+MariaDB [amazon]> desc payment;
++-------+---------+------+-----+---------+-------+
+| Field | Type    | Null | Key | Default | Extra |
++-------+---------+------+-----+---------+-------+
+| pid   | int(11) | YES  |     | NULL    |       |
++-------+---------+------+-----+---------+-------+
+1 row in set (0.065 sec)
+
+MariaDB [amazon]> alter table payment modify pid int;
+Query OK, 0 rows affected (0.292 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [amazon]> insert into payment values(1);
+Query OK, 1 row affected (0.031 sec)
+
+MariaDB [amazon]> select * from employees;
++------+-------+------+
+| eid  | ename | age  |
++------+-------+------+
+|    1 | AAA   |   17 |
+|    2 | BBB   |   20 |
+|    3 | CCC   |   20 |
++------+-------+------+
+3 rows in set (0.000 sec)
+
+MariaDB [amazon]> select * from payment;
++------+
+| pid  |
++------+
+|    2 |
+|    1 |
++------+
+2 rows in set (0.000 sec)
+
+MariaDB [amazon]> alter table payment add constraint ch check(pid>1);
+ERROR 4025 (23000): CONSTRAINT `ch` failed for `amazon`.`payment`
+MariaDB [amazon]> alter table payment1 add constraint ch check(pid>1);
+ERROR 1146 (42S02): Table 'amazon.payment1' doesn't exist
+MariaDB [amazon]> create table payment1(pid int);
+Query OK, 0 rows affected (0.246 sec)
+
+MariaDB [amazon]> alter table payment1 add constraint ch check(pid>1);
+Query OK, 0 rows affected (0.588 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
 MariaDB [amazon]>
