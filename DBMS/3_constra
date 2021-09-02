@@ -1,0 +1,125 @@
+Enter password: *****
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 3
+Server version: 10.6.3-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| electrical         |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| vjti               |
++--------------------+
+6 rows in set (0.065 sec)
+
+MariaDB [(none)]> create database amazon;
+Query OK, 1 row affected (0.087 sec)
+
+MariaDB [(none)]> use amazon;
+Database changed
+MariaDB [amazon]> create table customer(cid int,cname char(30),dop date,primary key(cid));
+Query OK, 0 rows affected (0.336 sec)
+
+MariaDB [amazon]> desc customer;
++-------+----------+------+-----+---------+-------+
+| Field | Type     | Null | Key | Default | Extra |
++-------+----------+------+-----+---------+-------+
+| cid   | int(11)  | NO   | PRI | NULL    |       |
+| cname | char(30) | YES  |     | NULL    |       |
+| dop   | date     | YES  |     | NULL    |       |
++-------+----------+------+-----+---------+-------+
+3 rows in set (0.087 sec)
+
+MariaDB [amazon]> insert into customer values(1,"AAA","1991-05-13");
+Query OK, 1 row affected (0.239 sec)
+
+MariaDB [amazon]> select * from customer;
++-----+-------+------------+
+| cid | cname | dop        |
++-----+-------+------------+
+|   1 | AAA   | 1991-05-13 |
++-----+-------+------------+
+1 row in set (0.000 sec)
+
+MariaDB [amazon]> insert into customer values(1,"BBB","1992-08-14");
+ERROR 1062 (23000): Duplicate entry '1' for key 'PRIMARY'
+MariaDB [amazon]> insert into customer values(NULL,"BBB","1992-08-14");
+ERROR 1048 (23000): Column 'cid' cannot be null
+MariaDB [amazon]> alter table customer drop primary key;
+Query OK, 1 row affected (0.634 sec)
+Records: 1  Duplicates: 0  Warnings: 0
+
+MariaDB [amazon]> desc customer;
++-------+----------+------+-----+---------+-------+
+| Field | Type     | Null | Key | Default | Extra |
++-------+----------+------+-----+---------+-------+
+| cid   | int(11)  | NO   |     | NULL    |       |
+| cname | char(30) | YES  |     | NULL    |       |
+| dop   | date     | YES  |     | NULL    |       |
++-------+----------+------+-----+---------+-------+
+3 rows in set (0.106 sec)
+
+MariaDB [amazon]> alter table customer add primary key(cid);
+Query OK, 0 rows affected (0.705 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [amazon]> show create table customer;
++----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table    | Create Table                                                                                                                                                                 |
++----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| customer | CREATE TABLE `customer` (
+  `cid` int(11) NOT NULL,
+  `cname` char(30) DEFAULT NULL,
+  `dop` date DEFAULT NULL,
+  PRIMARY KEY (`cid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 |
++----------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.012 sec)
+
+MariaDB [amazon]> create table orders(oid int,cid int,oname char(30),primary key(oid),foreign key(cid) references customer(cid));
+Query OK, 0 rows affected (0.257 sec)
+
+MariaDB [amazon]> desc orders;
++-------+----------+------+-----+---------+-------+
+| Field | Type     | Null | Key | Default | Extra |
++-------+----------+------+-----+---------+-------+
+| oid   | int(11)  | NO   | PRI | NULL    |       |
+| cid   | int(11)  | YES  | MUL | NULL    |       |
+| oname | char(30) | YES  |     | NULL    |       |
++-------+----------+------+-----+---------+-------+
+3 rows in set (0.046 sec)
+
+MariaDB [amazon]> show create table orders;
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table  | Create Table                                                                                                                                                                                                                                                                       |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| orders | CREATE TABLE `orders` (
+  `oid` int(11) NOT NULL,
+  `cid` int(11) DEFAULT NULL,
+  `oname` char(30) DEFAULT NULL,
+  PRIMARY KEY (`oid`),
+  KEY `cid` (`cid`),
+  CONSTRAINT `orders_ibfk_1` FOREIGN KEY (`cid`) REFERENCES `customer` (`cid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 |
++--------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.000 sec)
+
+MariaDB [amazon]> alter table orders drop foreign key;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '' at line 1
+MariaDB [amazon]> alter table orders drop constraint orders_ibfk_1;
+Query OK, 0 rows affected (0.267 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [amazon]> alter table orders add constraint fk foreign key(cid) references customer(cid);
+Query OK, 0 rows affected (0.634 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [amazon]>
