@@ -1,0 +1,164 @@
+Enter password: *****
+Welcome to the MariaDB monitor.  Commands end with ; or \g.
+Your MariaDB connection id is 3
+Server version: 10.6.3-MariaDB mariadb.org binary distribution
+
+Copyright (c) 2000, 2018, Oracle, MariaDB Corporation Ab and others.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+MariaDB [(none)]> show databases;
++--------------------+
+| Database           |
++--------------------+
+| amazon             |
+| electrical         |
+| information_schema |
+| mysql              |
+| performance_schema |
+| sys                |
+| vjti               |
++--------------------+
+7 rows in set (0.093 sec)
+
+MariaDB [(none)]> use amazon;
+Database changed
+MariaDB [amazon]> show tables;
++------------------+
+| Tables_in_amazon |
++------------------+
+| customer         |
+| employees        |
+| orders           |
+| payment          |
+| payment1         |
++------------------+
+5 rows in set (0.001 sec)
+
+MariaDB [amazon]> create table orders2(id int unique,oname char(20));
+Query OK, 0 rows affected (0.338 sec)
+
+MariaDB [amazon]> desc order2;
+ERROR 1146 (42S02): Table 'amazon.order2' doesn't exist
+MariaDB [amazon]> desc orders2;
++-------+----------+------+-----+---------+-------+
+| Field | Type     | Null | Key | Default | Extra |
++-------+----------+------+-----+---------+-------+
+| id    | int(11)  | YES  | UNI | NULL    |       |
+| oname | char(20) | YES  |     | NULL    |       |
++-------+----------+------+-----+---------+-------+
+2 rows in set (0.022 sec)
+
+MariaDB [amazon]> insert into orders2 values (1,"AAA"),(1,"BBB");
+ERROR 1062 (23000): Duplicate entry '1' for key 'id'
+MariaDB [amazon]> insert into orders2 values (1,"AAA"),(2,"BBB");
+Query OK, 2 rows affected (0.079 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+MariaDB [amazon]> alter table orders2 add constraint cu unique(oname);
+Query OK, 0 rows affected (0.414 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [amazon]> desc orders2;
++-------+----------+------+-----+---------+-------+
+| Field | Type     | Null | Key | Default | Extra |
++-------+----------+------+-----+---------+-------+
+| id    | int(11)  | YES  | UNI | NULL    |       |
+| oname | char(20) | YES  | UNI | NULL    |       |
++-------+----------+------+-----+---------+-------+
+2 rows in set (0.031 sec)
+
+MariaDB [amazon]> alter table orders2 drop index cu;
+Query OK, 0 rows affected (0.286 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+MariaDB [amazon]> desc orders2;
++-------+----------+------+-----+---------+-------+
+| Field | Type     | Null | Key | Default | Extra |
++-------+----------+------+-----+---------+-------+
+| id    | int(11)  | YES  | UNI | NULL    |       |
+| oname | char(20) | YES  |     | NULL    |       |
++-------+----------+------+-----+---------+-------+
+2 rows in set (0.079 sec)
+
+MariaDB [amazon]> create table orders3(id int NOT NULL,oname char(20) NOT NULL);
+Query OK, 0 rows affected (0.251 sec)
+
+MariaDB [amazon]> desc orders3;
++-------+----------+------+-----+---------+-------+
+| Field | Type     | Null | Key | Default | Extra |
++-------+----------+------+-----+---------+-------+
+| id    | int(11)  | NO   |     | NULL    |       |
+| oname | char(20) | NO   |     | NULL    |       |
++-------+----------+------+-----+---------+-------+
+2 rows in set (0.032 sec)
+
+MariaDB [amazon]> insert into orders3 values(1,NULL);
+ERROR 1048 (23000): Column 'oname' cannot be null
+MariaDB [amazon]> alter table orders3 modify oname NULL;
+ERROR 4161 (HY000): Unknown data type: 'NULL'
+MariaDB [amazon]> show tables;
++------------------+
+| Tables_in_amazon |
++------------------+
+| customer         |
+| employees        |
+| orders           |
+| orders2          |
+| orders3          |
+| payment          |
+| payment1         |
++------------------+
+7 rows in set (0.001 sec)
+
+MariaDB [amazon]> create table student(id int,marks decimal(4,2));
+Query OK, 0 rows affected (0.245 sec)
+
+MariaDB [amazon]> desc student;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| id    | int(11)      | YES  |     | NULL    |       |
+| marks | decimal(4,2) | YES  |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+2 rows in set (0.036 sec)
+
+MariaDB [amazon]> insert into student values(1,8889);
+ERROR 1264 (22003): Out of range value for column 'marks' at row 1
+MariaDB [amazon]> insert into student values(1,888.9);
+ERROR 1264 (22003): Out of range value for column 'marks' at row 1
+MariaDB [amazon]> insert into student values(1,88.89);
+Query OK, 1 row affected (0.085 sec)
+
+MariaDB [amazon]> insert into student values(2,88.8);
+Query OK, 1 row affected (0.094 sec)
+
+MariaDB [amazon]> insert into student values(2,88);
+Query OK, 1 row affected (0.035 sec)
+
+MariaDB [amazon]> delete from student where marks=88;
+Query OK, 1 row affected (0.129 sec)
+
+MariaDB [amazon]> select * from student;
++------+-------+
+| id   | marks |
++------+-------+
+|    1 | 88.89 |
+|    2 | 88.80 |
++------+-------+
+2 rows in set (0.000 sec)
+
+MariaDB [amazon]> insert into student values(2,88.999);
+Query OK, 1 row affected, 1 warning (0.068 sec)
+
+MariaDB [amazon]> select * from student;
++------+-------+
+| id   | marks |
++------+-------+
+|    1 | 88.89 |
+|    2 | 88.80 |
+|    2 | 89.00 |
++------+-------+
+3 rows in set (0.000 sec)
+
+MariaDB [amazon]>
